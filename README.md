@@ -1,6 +1,6 @@
 # Ai-LLM-Models
 
-Fine-tuned LLM model families by [@peterjohannmedina](https://github.com/peterjohannmedina).
+Fine-tuned LLM model families by [@peterjohannmedina](https://github.com/peterjohannmedina). All models are trained on real production data from live deployments — no synthetic datasets.
 
 Each model family lives in its own subdirectory with full documentation: harness requirements, system prompt specs, Modelfile presets, and hardware guidance.
 
@@ -10,15 +10,16 @@ Each model family lives in its own subdirectory with full documentation: harness
 
 ### [Medina](medina/) — Qwen3-based, OpenClaw-native agentic models
 
-Fine-tuned on Qwen3 and Qwen3.5 for agentic operation within the OpenClaw framework. Trained to reason and emit structured XML tool calls using the OpenClaw harness format.
+Fine-tuned on Qwen3 and Qwen3.5 using real OpenClaw production tool-call trajectories. Trained to reason, plan, and emit structured XML tool calls through the OpenClaw harness. Requires an agentic harness with tool schema injection and response loop — see [medina/docs/harness-requirements.md](medina/docs/harness-requirements.md).
 
-| Model | Base | Size | HuggingFace |
-|-------|------|------|-------------|
-| Medina-Qwen3-14B-OpenClaw | Qwen3-14B | 14B | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3-14B-OpenClaw) |
-| Medina-Qwen3-14B-OpenClaw-Merged | Qwen3-14B | 14B | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3-14B-OpenClaw-Merged) |
-| Medina-Qwen3.5-27B-OpenClaw | Qwen3.5-27B | 27B | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3.5-27B-OpenClaw) |
+| Model | Base | Params | Training Data | HuggingFace |
+|-------|------|--------|---------------|-------------|
+| Medina-Qwen3-14B-OpenClaw | Qwen3-14B | 14B | 250 real sessions | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3-14B-OpenClaw) |
+| Medina-Qwen3-14B-OpenClaw-Merged | Qwen3-14B | 14B | Merged weights | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3-14B-OpenClaw-Merged) |
+| Medina-Qwen3.5-27B-OpenClaw | Qwen3.5-27B | 27B | 243 real sessions | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3.5-27B-OpenClaw) |
+| Medina-Qwen3.5-27B-OpenClaw-Merged | Qwen3.5-27B | 27B | Merged weights | [→](https://huggingface.co/peterjohannmedina/Medina-Qwen3.5-27B-OpenClaw-Merged) |
 
-**Quick start:** [medina/README.md](medina/README.md)
+**Docs:** [medina/README.md](medina/README.md)
 
 ---
 
@@ -27,7 +28,7 @@ Fine-tuned on Qwen3 and Qwen3.5 for agentic operation within the OpenClaw framew
 ```
 Ai-LLM-Models/
 └── medina/                          # Medina model family
-    ├── README.md                    # Overview, HF links, quick starts
+    ├── README.md                    # Overview, HF links, quick starts, training summary
     ├── configs/
     │   └── Modelfile                # Ollama Modelfile (ready to use)
     └── docs/
@@ -40,13 +41,11 @@ Ai-LLM-Models/
 
 ## Adding a New Model Family
 
-Each family gets its own top-level subdirectory following the same structure:
-
 ```
 <family-name>/
 ├── README.md
 ├── configs/
-│   └── Modelfile          (or equivalent for the target runtime)
+│   └── Modelfile
 └── docs/
     ├── harness-requirements.md
     ├── system-prompt.md
