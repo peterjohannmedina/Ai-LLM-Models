@@ -1,0 +1,49 @@
+# Medina-Qwen3-14B-OpenClaw — Ollama Modelfile
+#
+# Setup:
+#   1. Download the GGUF:
+#      huggingface-cli download peterjohannmedina/Medina-Qwen3-14B-OpenClaw \
+#        Medina-Qwen3-14B-OpenClaw-Q4_K_M.gguf --local-dir ~/models/medina-14b
+#
+#   2. Update the FROM path below to your local GGUF location
+#
+#   3. Create the model:
+#      ollama create medina-qwen3-14b-openclaw -f configs/Modelfile
+#
+#   4. Test:
+#      ollama run medina-qwen3-14b-openclaw "What can you do?"
+
+FROM /path/to/Medina-Qwen3-14B-OpenClaw-Q4_K_M.gguf
+
+# Qwen3 ChatML chat template
+# Required — Ollama cannot detect this from GGUF metadata
+TEMPLATE """{{- if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end -}}
+{{- range .Messages }}<|im_start|>{{ .Role }}
+{{ .Content }}<|im_end|>
+{{ end -}}<|im_start|>assistant
+"""
+
+# Default system prompt
+# Override per-request via the API if needed
+SYSTEM """You are Medina, an AI assistant fine-tuned by Peter on Qwen3-14B for agentic operation within OpenClaw. You are direct, concise, and technically accurate.
+
+When tool definitions are provided in the context, you may invoke them using the <function_calls> format. When no tools are provided, respond conversationally — do not fabricate or emit tool calls.
+
+For simple questions, give simple answers. For multi-step tasks, reason step by step before acting.
+
+You are optimized for local inference on Apple Silicon. Keep responses focused. /no_think"""
+
+# Context window — 32K max; reduce to 8192-16384 to lower RAM usage
+PARAMETER num_ctx 32768
+
+# Sampling parameters — tuned for agentic precision
+PARAMETER temperature 0.6
+PARAMETER top_p 0.95
+PARAMETER repeat_penalty 1.1
+
+# Stop tokens — all Qwen3 ChatML end conditions
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|endoftext|>"
+PARAMETER stop "<|im_start|>"
